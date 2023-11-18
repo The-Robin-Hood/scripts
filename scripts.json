@@ -1,0 +1,7 @@
+[
+    {
+        "filename": "termux-vscode.sh",
+        "title": "VS Code in Termux",
+        "description": "Code server is a VS Code instance running on a remote server accessible through a browser. It allows you to code anywhere, anytime without needing to install VS Code on your local machine."
+    }
+]
