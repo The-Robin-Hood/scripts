@@ -68,7 +68,9 @@ main(){
     setup_cleanup_trap cleanup
 
     run_step "pkg update -y" "Updating package list"
-    run_step "yes '' | pkg upgrade -y" "Upgrading packages"
+    log_info "Upgrading packages"
+    yes " " | pkg upgrade -y > /dev/null 2>&1
+    current_step=$((current_step + 1))
     run_step "pkg install tur-repo -y" "Installing tur-repo"
     run_step "pkg install code-server git python3 -y" "Installing code-server, git, and python3"
     run_step "setup_config" "Setting up code-server configuration"
