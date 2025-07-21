@@ -1,63 +1,91 @@
 #!/bin/bash
 
-# Function to display a spinning wheel loading animation
-loading_animation() {
-    local spinstr='|/-\'
-    while ps -p $1 > /dev/null; do
-        printf "[%c] " "$spinstr"
-        spinstr=${spinstr#?}${spinstr%???}
-        sleep 0.1
-        printf "\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
+# check curl exist or not
+if ! command -v curl >/dev/null 2>&1; then
+    echo "Install curl and run the script"
+    exit 1
+fi
+
+COMMON_SCRIPT_URL="https://scripts.ansari.wtf/common.sh"
+
+# source <(curl -s $COMMON_SCRIPT_URL)
+source "./common.sh"
+
+cleanup() {
+    echo
+    echo -e "${YELLOW}Setup interrupted. Cleaning up...${NC}"
+    pkill -f code-server 2>/dev/null
+    exit 1
 }
 
-# Function to execute a command with a loading animation and status message
-execute_with_loading_animation() {
-    local command="$1"
-    local description="$2"
-    local success_message="$3"
+setup_config() {
+    local config_dir="$HOME/.config/code-server"
+    local config_file="$config_dir/config.yaml"
 
-    echo $description
+    mkdir -p "$config_dir"
+    rm -f "$config_file"
 
-    # Run the command in the background
-    $command > /dev/null 2>&1 &
-
-    local pid=$!
-    loading_animation $pid
-
-    if [ $? -eq 0 ]; then
-        printf "$success_message\n"
-    else
-        printf "\n%s failed.\n" "$description"
-    fi
-}
-
-clear
-# Update the packages without displaying output
-execute_with_loading_animation "pkg update -y" "Updating Packages" "Packages updated successfully"
-
-# Install tur-repo without displaying output
-execute_with_loading_animation "pkg install tur-repo -y" "\nInstalling tur-repo" "tur-repo installed successfully"
-
-# Install code-server, git, and python3 without displaying output
-execute_with_loading_animation "pkg install code-server git python3 -y" "\nInstalling code-server, git, and python3" "Packages installed successfully"
-
-
-# change the config.yaml file
-mkdir -p ~/.config/code-server
-rm -rf ~/.config/code-server/config.yaml
-cat <<end > ~/.config/code-server/config.yaml
+    cat > "$config_file" << 'EOF'
 bind-addr: 0.0.0.0:8000
 auth: none
 cert: false
-end
+EOF
+    return 0
+}
 
-# clear 
-echo "\nInitializing code-server. This might take few seconds...\n"
-mkdir -p .code-server-logs
-code-server > .code-server-logs/code-server.log 2>&1 &
-# wait for code-server to start
-sleep 10
-# open the browser
-termux-open-url http://localhost:8000
+wait_for_service() {
+    local max_attempts=30
+    local attempt=0
+
+    printf "${BLUE}Starting code-server${NC} "
+
+    while [ $attempt -lt $max_attempts ]; do
+        if curl -s http://localhost:8000 >/dev/null 2>&1; then
+            printf "${GREEN}✓${NC}\n"
+            return 0
+        fi
+
+        printf "%s" "${SPINNER:$((attempt % ${#SPINNER})):1}"
+        sleep 1
+        printf "\b"
+        attempt=$((attempt + 1))
+    done
+
+    printf "${RED}✗${NC}\n"
+    echo -e "${RED}Timeout: Code-server failed to start${NC}"
+    return 1
+}
+
+
+main(){
+    clear
+    show_box "Termux VSCode Setup"
+
+    total_steps=5
+    current_step=0
+    progress_line=5
+
+    initialize_progress_bar
+    setup_cleanup_trap cleanup
+
+    run_step "pkg update -y" "Updating package list"
+    run_step "yes '' | pkg upgrade -y" "Upgrading packages"
+    run_step "pkg install tur-repo -y" "Installing tur-repo"
+    run_step "pkg install code-server git python3 -y" "Installing code-server, git, and python3"
+    run_step "setup_config" "Setting up code-server configuration"
+
+    log_info "Creating LOG directory"
+    mkdir -p "$HOME/.code-server-logs"
+    log_info "Starting code-server"
+    code-server > "$HOME/.code-server-logs/code-server.log" 2>&1 &
+
+    if wait_for_service; then
+        show_box "Code-server is running" 40 "GREEN" "Access your code-server at http://localhost:8000"
+        if command_exists "termux-open-url"; then
+            log_info "Opening in browser"
+            termux-open-url http://localhost:8000
+        fi
+    else
+        exit 1
+    fi
+}

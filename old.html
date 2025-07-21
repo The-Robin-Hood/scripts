@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Scripts</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+    <style>
+        .custom-scrollbar {
+            scrollbar-width: 1px;
+            scrollbar-color: transparent;
+            scroll-margin: 0px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 1px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            height: 1px;
+            width: 1px;
+            scrollbar-width: thin;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+
+<body class="bg-gray-800 font-sans text-white">
+    <div class="container mx-auto py-8">
+        <h1 class="text-5xl text-center mb-8" style="font-family: 'Caveat', cursive;">Simple Scripts</h1>
+        <div class="snippet bg-gray-700 p-4 mb-8" id="root">
+        </div>
+    </div>
+    <script>
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                console.log('Copied to clipboard');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+
+        async function getText() {
+            const scriptList = await fetch("./scripts.json").then((res) => res.json());
+            const rootElement = document.getElementById("root");
+            scriptList.forEach(async (script) => {
+                const response = await fetch(`./${script.filename}`);
+                const data = await response.text();
+                const snippetContainer = document.createElement("div");
+                snippetContainer.className = "snippet p-4 mb-8";
+                const heading = document.createElement("h2");
+                heading.className = "text-xl mb-4 font-semibold";
+                heading.textContent = script.title;
+                const description = document.createElement("p");
+                description.className = "text-gray-400 mb-4";
+                description.textContent = script.description;
+                const pre = document.createElement("pre");
+                pre.className = "bg-gray-900 p-4 border border-gray-700 relative overflow-x-auto custom-scrollbar";
+                const button = document.createElement("button");
+                button.className = "bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-2 rounded absolute top-2 right-2";
+                button.innerHTML = `<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3"><path d="M1 9.50006C1 10.3285 1.67157 11.0001 2.5 11.0001H4L4 10.0001H2.5C2.22386 10.0001 2 9.7762 2 9.50006L2 2.50006C2 2.22392 2.22386 2.00006 2.5 2.00006L9.5 2.00006C9.77614 2.00006 10 2.22392 10 2.50006V4.00002H5.5C4.67158 4.00002 4 4.67159 4 5.50002V12.5C4 13.3284 4.67158 14 5.5 14H12.5C13.3284 14 14 13.3284 14 12.5V5.50002C14 4.67159 13.3284 4.00002 12.5 4.00002H11V2.50006C11 1.67163 10.3284 1.00006 9.5 1.00006H2.5C1.67157 1.00006 1 1.67163 1 2.50006V9.50006ZM5 5.50002C5 5.22388 5.22386 5.00002 5.5 5.00002H12.5C12.7761 5.00002 13 5.22388 13 5.50002V12.5C13 12.7762 12.7761 13 12.5 13H5.5C5.22386 13 5 12.7762 5 12.5V5.50002Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>`;
+                button.addEventListener("click", () => copyToClipboard(data));
+                const code = document.createElement("code");
+                code.className = "text-gray-300";
+                code.textContent = data;
+                pre.appendChild(button);
+                pre.appendChild(code);
+                snippetContainer.appendChild(heading);
+                snippetContainer.appendChild(description);
+                snippetContainer.appendChild(pre);
+                rootElement.appendChild(snippetContainer);
+            });
+        }
+        getText();
+    </script>
+</body>
+
+</html>
