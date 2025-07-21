@@ -8,8 +8,7 @@ fi
 
 COMMON_SCRIPT_URL="https://scripts.ansari.wtf/common.sh"
 
-# source <(curl -s $COMMON_SCRIPT_URL)
-source "./common.sh"
+source <(curl -s $COMMON_SCRIPT_URL)
 
 cleanup() {
     echo
