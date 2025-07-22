@@ -11,58 +11,215 @@
     <script src="./assets/common.js"></script>
 </head>
 
-<body class="h-screen flex items-center justify-center bg-black flex flex-col font-black">
+<body class="h-screen flex items-center justify-center bg-black flex-col font-black">
 
     <!-- Warning Modal Section  -->
     <input class="modal-state" id="warning" type="checkbox" />
     <div class="modal">
         <div class="modal__inner">
-            <h2 style="text-align: center;">Warning</h2>
+            <h2 class="text-center">Warning</h2>
             <p class="modal__p">
                 Kindly use a desktop or laptop for a better experience.
             </p>
         </div>
     </div>
 
-    <h1 class="text-white text-[30px]">
-        .Scripts.
-    </h1>
-    <div class="flex flex-col text-white gap-x-[200px] gap-y-2 p-10">
+    <!-- Script Detailed Modal -->
+    <div id="script-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 justify-center items-center">
+        <div class="bg-white text-black p-6 rounded-lg max-w-lg w-full relative">
+            <button id="closeModal" class="absolute top-2 right-2 text-xl font-bold">&times;</button>
+            <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+            <ul id="modalContent" class="list-disc ml-5 text-sm"></ul>
+            <div class="flex justify-end mt-4">
+                <button id="showCodeBtn" class="mt-4 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"
+                        class="h-3 w-3 inline-block mr-1 fill-current text-white">
+                        <path
+                            d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z" />
+                    </svg>
+                    <span>
+                        Show Code
+                    </span></button>
+                <button id="downloadBtn" class="mt-4 ml-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block mr-1 fill-current text-white"
+                        viewBox="0 0 512 512">
+                        <path
+                            d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352 64 352zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
+                    </svg>
+                    <span>
+                        Download
+                    </span>
+                </button>
+            </div>
+            <!-- <button id="copyExecutionCommand"
+                class="mt-4 ml-2 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 disabled:opacity-50">Copy
+                Execution Command</button> -->
+
+        </div>
     </div>
+
+    <!-- Fullscreen Code Modal -->
+    <div id="code-modal" class="hidden fixed inset-0 z-50 flex flex-col">
+        <div class="flex justify-end p-2 gap-3">
+            <button id="copyCode"
+                class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50">
+                copy code
+            </button>
+            <button id="closeCodeModal"
+                class="bg-gray-900 text-white text-3xl font-bold px-3 rounded hover:bg-gray-800">&times;</button>
+        </div>
+        <div id="editor" class="w-full h-full rounded-md overflow-hidden self-center"></div>
+    </div>
+
+    <!-- Main context -->
+    <img src="./assets/favicon.png" alt="icon" class="w-[100px] h-[100px] mb-1" />
+    <h1 class="text-white text-[30px]">.Scripts.</h1>
+    <div id="scriptsList" class="flex flex-col text-white gap-y-2 p-10"></div>
 
     <!-- Footer -->
     <div class="footer">
-        <div style="display: flex; align-items: center;gap:25px">
+        <div class="flex items-center gap-6">
             <a href="https://github.com/The-Robin-Hood/scripts" target="_blank">
-                <?xml version="1.0" ?><svg height="40px" version="1.1" viewBox="0 0 60 60" width="40px"
-                    xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <title />
-                    <defs />
-                    <g fill="none" fill-rule="evenodd" id="black" stroke="none" stroke-width="1">
-                        <g id="github">
-                            <path
-                                d="M30,60 C46.5685433,60 60,46.5685433 60,30 C60,13.4314567 46.5685433,0 30,0 C13.4314567,0 0,13.4314567 0,30 C0,46.5685433 13.4314567,60 30,60 Z"
-                                fill="#000000" />
-                            <path
-                                d="M25.4252739,47.5168887 C25.4252739,47.0671729 25.4094072,45.8772272 25.4003405,44.2968305 C20.2651779,45.440294 19.1817051,41.7588994 19.1817051,41.7588994 C18.3419003,39.5719093 17.1314934,38.9897191 17.1314934,38.9897191 C15.4552838,37.8148801 17.2584274,37.8392833 17.2584274,37.8392833 C19.111438,37.9729198 20.0861102,39.7903759 20.0861102,39.7903759 C21.7328529,42.6827342 24.4064015,41.8483777 25.4592741,41.3638002 C25.6270084,40.1401549 26.1041445,39.3057984 26.6311475,38.8328415 C22.5318575,38.3552363 18.2217663,36.7306815 18.2217663,29.4771257 C18.2217663,27.4109894 18.941437,25.7213595 20.1223771,24.3977773 C19.9331093,23.9190101 19.2984391,21.9946447 20.3037115,19.3881523 C20.3037115,19.3881523 21.8541203,18.8791716 25.3799404,21.3287864 C26.8521487,20.9092841 28.4320244,20.6977898 30.0028333,20.6908175 C31.5702423,20.6977898 33.1489846,20.9092841 34.624593,21.3287864 C38.1481464,18.8791716 39.6962885,19.3881523 39.6962885,19.3881523 C40.7038276,21.9934827 40.0702907,23.917848 39.8798896,24.3977773 C41.0630963,25.7213595 41.7771004,27.4109894 41.7771004,29.4771257 C41.7771004,36.7492744 37.4602091,38.349426 33.3473191,38.8177347 C34.0114562,39.4022491 34.6007929,40.5573331 34.6007929,42.3236588 C34.6007929,44.8546176 34.5769927,46.8963506 34.5769927,47.5168887 C34.5769927,48.0235453 34.9101946,48.6115458 35.8474666,48.4267788 C43.176775,45.9190612 48.4615385,38.8281932 48.4615385,30.4683597 C48.4615385,20.0133386 40.1949581,11.5384615 29.9994333,11.5384615 C19.8050419,11.5384615 11.5384615,20.0133386 11.5384615,30.4683597 C11.5395949,38.8305174 16.8288917,45.9260335 24.1650001,48.4291029 C25.0875387,48.6022493 25.4252739,48.017735 25.4252739,47.5168887 Z"
-                                fill="#FFFFFF" />
-                        </g>
-                    </g>
-                </svg>
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/github.svg" class="h-8 w-8" alt="GitHub" />
             </a>
             <a href="https://x.com/ansariwtf" target="_blank">
-                <?xml version="1.0" ?><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                    viewBox="0 0 1200 1227" fill="none">
-                    <g clip-path="url(#clip0_1_2)">
-                        <path
-                            d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"
-                            fill="white" />
-                    </g>
-                </svg>
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/x.svg" class="h-8 w-8" alt="X/Twitter" />
             </a>
         </div>
     </div>
+
+    <script>
+        const scriptsList = document.getElementById('scriptsList');
+        const modal = document.getElementById('script-modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        const showCodeBtn = document.getElementById('showCodeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyExecutionCommand = document.getElementById('copyExecutionCommand');
+        const codeModal = document.getElementById('code-modal');
+        const closeCodeModal = document.getElementById('closeCodeModal');
+        const copyCode = document.getElementById('copyCode');
+
+        let currentScript = null;
+
+        closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+        closeCodeModal.addEventListener('click', () => {
+            codeModal.classList.add('hidden');
+            if (monaco.editor.getModels().length > 0) {
+                monaco.editor.getModels()[0].dispose();
+            }
+            const editor = document.getElementById('editor');
+            if (editor.children.length > 0) {
+                editor.innerHTML = '';
+            }
+        });
+
+        fetch('./scripts.json')
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(script => {
+                    const label = document.createElement('label');
+                    label.textContent = `${script.id}. ${script.title}`;
+                    label.className = 'opacity-75 hover:opacity-100 hover:text-yellow-400 cursor-pointer';
+                    label.addEventListener('click', () => {
+                        currentScript = script;
+                        modalTitle.textContent = script.title;
+                        if (!script.description) {
+                            script.description = 'No description available.';
+                        } else if (Array.isArray(script.description)) {
+                            script.description = script.description.join('</li><li>');
+                        }
+                        modalContent.innerHTML = `<li>${script.description || 'No description available.'}</li>`;
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    });
+                    scriptsList.appendChild(label);
+                });
+            })
+            .catch(err => console.error('Error loading scripts.json:', err));
+
+        showCodeBtn.addEventListener('click', async () => {
+            if (!currentScript || !currentScript.filename) return;
+            const response = await fetch(`./${currentScript.filename}`);
+            const code = await response.text();
+            codeModal.classList.remove('hidden');
+
+            //delete previous editor instance if exists
+            const editor = document.getElementById('editor');
+            if (editor.children.length > 0) {
+                editor.innerHTML = '';
+            }
+
+            require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs' } });
+            require(['vs/editor/editor.main'], () => {
+                monaco.editor.defineTheme("myTheme", {
+                    base: "vs-dark",
+                    inherit: true,
+                    rules: [],
+                    colors: {
+                        "editor.background": "#191a21",
+                    },
+                });
+                monaco.editor.setTheme("myTheme");
+
+                monaco.editor.create(document.getElementById('editor'), {
+                    value: code,
+                    language: `${currentScript.language || 'plaintext'}`,
+                    fontSize: 14,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    readOnly: true,
+                    lineNumbers: false,
+                });
+            });
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (!currentScript || !currentScript.filename) return;
+            const link = document.createElement('a');
+            link.href = `./${currentScript.filename}`;
+            link.download = currentScript.filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // copyExecutionCommand.addEventListener('click', () => {
+        //     if (!currentScript || !currentScript.filename) return;
+        //     const command = `curl -s https://scripts.ansariwtf.sh/${currentScript.filename} | bash`;
+        //     navigator.clipboard.writeText(command).then(() => {
+        //         copyExecutionCommand.textContent = 'Command Copied!';
+        //         copyExecutionCommand.disabled = true;
+        //         setTimeout(() => {
+        //             copyExecutionCommand.textContent = 'Copy Execution Command';
+        //             copyExecutionCommand.disabled = false;
+        //         }, 2000);
+        //     }).catch(err => {
+        //         console.error('Failed to copy command:', err);
+        //     });
+        // });
+
+        copyCode.addEventListener('click', () => {
+            const editor = monaco.editor.getModels()[0];
+            if (editor) {
+                const code = editor.getValue();
+                navigator.clipboard.writeText(code).then(() => {
+                    copyCode.textContent = 'copied!';
+                    copyCode.disabled = true;
+                    setTimeout(() => {
+                        copyCode.textContent = 'copy code';
+                        copyCode.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy code:', err);
+                });
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
 </body>
 
 </html>
