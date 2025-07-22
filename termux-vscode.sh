@@ -6,7 +6,7 @@ if ! command -v curl >/dev/null 2>&1; then
     exit 1
 fi
 
-COMMON_SCRIPT_URL="https://scripts.ansari.wtf/common.sh"
+COMMON_SCRIPT_URL="https://scripts.ansari.wtf/base.sh"
 
 source <(curl -s $COMMON_SCRIPT_URL)
 

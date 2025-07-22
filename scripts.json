@@ -9,5 +9,16 @@
             "It allows you to code anywhere, anytime without needing to install VS Code on your local machine.",
             "The following script sets up code-server in Termux, enabling you to run VS Code in a mobile environment."
         ]
+    },
+    {
+        "id":"002",
+        "language":"shell",
+        "filename":"arch.sh",
+        "title":"Arch Linux Installation Script",
+        "description":[
+            "This script automates the installation of Arch Linux with a Btrfs filesystem, including subvolume setup, base system install, and bootloader configuration.",
+            "It guides you through input prompts (disk, username, timezone, etc.) and logs all actions and output for troubleshooting.",
+            "After installation, it creates and runs a chroot script that finalizes system settings, users, and essential services like SSH and NetworkManager."
+        ]
     }
 ]

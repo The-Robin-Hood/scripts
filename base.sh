@@ -29,25 +29,38 @@ timestamp() {
     date "+%Y-%m-%d %H:%M:%S"
 }
 
+log(){
+    local show="$1"
+    if [ "$show" = true ]; then
+        echo -e "$2"
+    fi
+    echo -e "[$(timestamp)] $2" >> ${LOGFILE:-"script.log"}
+}
+
 log_info() {
-    echo -e "${BLUE}[$(timestamp)] [ INFO  ]${NC} $1"
+    echo -e "${BLUE}[ INFO ] $1${NC} "
+    echo -e "${BLUE}[$(timestamp)] [ INFO ]${NC} $1" >> ${LOGFILE:-"script.log"}
 }
 
 log_success() {
-    echo -e "${GREEN}[$(timestamp)] [SUCCESS]${NC} $1"
+    echo -e "${GREEN}[ SUCC ] $1${NC} "
+    echo -e "${GREEN}[$(timestamp)] [ SUCC ]${NC} $1" >> ${LOGFILE:-"script.log"}
 }
 
 log_warning() {
-    echo -e "${YELLOW}[$(timestamp)] [ WARN  ]${NC} $1"
+    echo -e "${YELLOW}[ WARN ] $1${NC} "
+    echo -e "${YELLOW}[$(timestamp)] [ WARN ]${NC} $1" >> ${LOGFILE:-"script.log"}
 }
 
 log_error() {
-    echo -e "${RED}[$(timestamp)] [ ERROR ]${NC} $1"
+    echo -e "${RED}[ ERRR ] $1${NC} "
+    echo -e "${RED}[$(timestamp)] [ ERRR ]${NC} $1" >> ${LOGFILE:-"script.log"}
 }
 
 log_debug() {
     if [ "${DEBUG:-}" = "true" ]; then
-        echo -e "${CYAN}[$(timestamp)] [ DEBUG ]${NC} $1"
+        echo -e "${CYAN}[$(timestamp)] [ DEBG ]${NC} $1"
+        echo -e "${CYAN}[$(timestamp)] [ DEBG ]${NC} $1" >> ${LOGFILE:-"script.log"}
     fi
 }
 
@@ -90,6 +103,8 @@ execute_step() {
     local command="$1"
     local message="$2"
     local allow_failure="${3:-false}"
+
+    log false "$message : Executing command: $command"
     
     # command in background, suppress all output
     eval "$command" >/dev/null 2>&1 &
@@ -285,6 +300,93 @@ check_disk_space() {
     fi
     return 0
 }
+
+prompt_input() {
+  local PROMPT="$1"
+  local VAR_NAME="$2"
+
+  echo -ne "${YELLOW}${PROMPT}${NC}: "
+  read "$VAR_NAME"
+}
+
+prompt_masked_password() {
+    local prompt_text="${1:-Password: }"
+    local password=""
+    
+    echo -en "${YELLOW}$prompt_text${NC}: "
+    
+    stty -echo
+    
+    # Read password character by character
+    while IFS= read -r -n1 -s char; do
+        # Check for Enter key (newline)
+        if [[ -z $char ]] || [[ $char == $'\n' ]] || [[ $char == $'\r' ]]; then
+            break
+        fi
+        
+        # Check for Backspace
+        if [[ $char == $'\177' ]] || [[ $char == $'\b' ]]; then
+            if [[ ${#password} -gt 0 ]]; then
+                password="${password%?}"  # Remove last character
+                echo -ne '\b \b'          # Move cursor back, print space, move back again
+            fi
+        else
+            password+="$char"
+            echo -n "*"
+        fi
+    done
+    
+    stty echo
+    echo  
+
+    if [[ -n "$2" ]]; then
+        eval "$2=\"$password\""
+    else
+        echo $password
+    fi
+}
+
+
+# ========== Cursor Positioning Functions ==========
+
+get_cursor_line() {
+    exec < /dev/tty
+    local oldstty=$(stty -g)
+    stty raw -echo min 0 time 5
+    printf '\033[6n' > /dev/tty
+
+    IFS=';' read -r -d R -a pos
+    stty "$oldstty"
+
+    echo "${pos[0]#*[}"
+}
+
+
+move_cursor_to_line() {
+    local target_line="$1"
+    tput cup $((target_line - 1)) 0
+}
+
+
+clear_from_line_to_bottom() {
+    local start_line="$1"
+    move_cursor_to_line "$start_line"
+    tput ed  # Clear from cursor to bottom of screen
+}
+
+
+clear_screen_from_given_line() {
+    local line="$1"
+
+    if ! [[ "$line" =~ ^[0-9]+$ ]]; then
+        echo "Invalid line number: $line"
+        return 1
+    fi
+
+    clear_from_line_to_bottom "$line"
+}
+
+# ===================================================
 
 # ========= THIS FUNCTION IS FOR SPECIFIC PURPOSE OF SHOWING PROGRESS BAR AT TOP==========
 initialize_progress_bar(){
