@@ -13,8 +13,8 @@
     {
         "id":"002",
         "language":"shell",
-        "filename":"arch.sh",
-        "title":"Arch Linux Installation Script",
+        "filename":"arch/install.sh",
+        "title":"Arch Linux Bootstrap",
         "description":[
             "This script automates the installation of Arch Linux with a Btrfs filesystem, including subvolume setup, base system install, and bootloader configuration.",
             "It guides you through input prompts (disk, username, timezone, etc.) and logs all actions and output for troubleshooting.",

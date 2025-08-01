@@ -128,7 +128,7 @@ install_base_system(){
     echo
     log_info "Installing base system packages"
     log_warning "About to install base system packages. This may take a while."
-    execute_step "pacstrap -K /mnt base linux linux-headers linux-firmware btrfs-progs vim openssh networkmanager sudo" "Installing base system packages"
+    execute_step "pacstrap -K /mnt base base-devel linux linux-headers linux-firmware btrfs-progs vim openssh networkmanager sudo git" "Installing base system packages"
     clear_screen_from_given_line 25
     log_success "Base system packages installed successfully."
 }
@@ -169,6 +169,13 @@ configure_initramfs() {
     log_success "Initramfs configured successfully."
 }
 
+configure_initramfs_nvidia() {
+    log_info "Configuring initramfs for Btrfs NVIDIA"
+    execute_step "sed -i 's/^MODULES=(btrfs)/MODULES=(btrfs nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf" "Configuring initramfs for Btrfs"
+    execute_step "mkinitcpio -P" "Generating initramfs"
+    log_success "Initramfs configured successfully."
+}
+
 setup_users() {
     log_info "Setting up users"
     execute_step "echo -e '$ROOT_PASSWORD\n$ROOT_PASSWORD' | passwd root" "Setting root password"   
@@ -195,6 +202,12 @@ EOF
     log_success "Bootloader set up successfully."
 }
 
+setup_nvidia_packages() {
+    log_info "Setting up Nvidia packages"
+    execute_step "pacman -S dkms libva-nvidia-driver nvidia-open-dkms --noconfirm" "Installing Nvidia packages (OSS version)"
+    log_success "Nvidia Packages installed successfully."
+}
+
 enable_services() {
     log_info "Enabling essential services"
     execute_step "systemctl enable NetworkManager" "Enabling NetworkManager"
@@ -208,6 +221,10 @@ configure_system_basics
 configure_initramfs
 setup_users
 setup_bootloader
+ask_yes_no "Do you want to install Nvidia Packages?" && {
+    setup_nvidia_packages
+    configure_initramfs_nvidia
+} 
 enable_services
 
 log_success "Chroot setup completed successfully."
