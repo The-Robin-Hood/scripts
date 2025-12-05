@@ -52,11 +52,11 @@ main(){
     trap cleanup_sudo EXIT
     show_box "Arch Post Installation" 
     yay_install
-    execute_step "yay -S --noconfirm fzf fd tree stow keychain zsh unzip ghostty tmux zoxide neovim code cliphist pacman-contrib --needed" "Installing Development Essentials"
+    execute_step "yay -S --noconfirm fzf fd tree stow keychain zsh unzip ghostty tmux zoxide neovim cliphist pacman-contrib --needed" "Installing Development Essentials"
     execute_step "yay -S --noconfirm rofi bat polkit-gnome ttf-font-awesome noto-fonts noto-fonts-emoji --needed" "Installing Minimal GUI Tools"
-    execute_step "yay -S --noconfirm bruno-bin obsidian-bin" "Installing Prebuild binaries"
+    execute_step "yay -S --noconfirm bruno-bin obsidian-bin visual-studio-code-bin zen-browser-bin" "Installing Prebuild binaries"
     execute_step "yay -S --noconfirm hyprland-git" "Installing Hyprland"
-    execute_step "yay -S --noconfirm hypridle hyprlock-git hyprshot ags-hyprpanel-git swww --needed" "Installing Hyprland Environment"
+    # execute_step "yay -S --noconfirm hypridle hyprlock-git hyprshot ags-hyprpanel-git swww --needed" "Installing Hyprland Environment"
     execute_step 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"' "Installing oh-my-zsh"
     execute_step "git clone https://github.com/zsh-users/zsh-autosuggestions .oh-my-zsh/custom/plugins/zsh-autosuggestions" "Cloning zsh-autosuggestions plugin"
     execute_step "git clone https://github.com/The-Robin-Hood/dotfiles" "Cloning Dotfiles"
