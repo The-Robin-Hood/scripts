@@ -128,7 +128,7 @@ install_base_system(){
     echo
     log_info "Installing base system packages"
     log_warning "About to install base system packages. This may take a while."
-    execute_step "pacstrap -K /mnt base base-devel linux linux-headers linux-firmware btrfs-progs vim openssh networkmanager sudo git" "Installing base system packages"
+    execute_step "pacstrap -K /mnt base base-devel linux linux-headers linux-firmware btrfs-progs neovim openssh networkmanager sudo git zsh" "Installing base system packages"
     clear_screen_from_given_line 25
     log_success "Base system packages installed successfully."
 }
