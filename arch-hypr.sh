@@ -168,7 +168,7 @@ yay_setup(){
 
 media_setup(){
     log_info "Setting up Media Applications"
-    execute_step "sudo pacman -S --needed ${MEDIA_STACK[@]}" "Installing Media Stack Packages"
+    execute_step "sudo pacman -S --needed ${MEDIA_STACK[*]}" "Installing Media Stack Packages"
     log_info "Media Applications setup completed"
 
     log_info "Setting up audio with PipeWire"
@@ -180,7 +180,7 @@ media_setup(){
 
 session_setup(){
     log_info "Setting up Session Manager (SDDM)"
-    execute_step "sudo pacman -S --needed ${SESSION_STACK[@]}" "Installing Session Stack Packages"
+    execute_step "sudo pacman -S --needed ${SESSION_STACK[*]}" "Installing Session Stack Packages"
     execute_step "git clone -b wraith https://github.com/The-Robin-Hood/SilentSDDM" "Cloning Wraith SDDM"
     execute_step "sudo mkdir -p /usr/share/sddm/themes/wraith" "Creating SDDM folder"
     execute_step "sudo cp -r SilentSDDM/* /usr/share/sddm/themes/wraith/" "Moving files"
@@ -214,15 +214,15 @@ main(){
     
     yay_setup
     
-    execute_step "yay -Syu --noconfirm" "Updating System Packages"
-    execute_step "yay -S --noconfirm ${PRE_INSTALLED_PKGS[@]}" "Checking Pre-installed Packages"
-    execute_step "yay -S --noconfirm ${FONTS_THEME[@]}" "Installing Fonts and Theme Packages"
-    execute_step "yay -S --noconfirm ${SECURITY[@]}" "Installing Security Packages"
-    execute_step "yay -S --noconfirm ${CLI_TOOLS[@]}" "Installing CLI Tools"
-    execute_step "yay -S --noconfirm ${NETWORK_REMOTE[@]}" "Installing Network and Remote Packages"
-    execute_step "yay -S --noconfirm ${CONTAINERS_VMS[@]}" "Installing Container and VM Packages"
-    execute_step "yay -S --noconfirm ${GUI_APPS[@]}" "Installing GUI Applications"
-    execute_step "yay -S --noconfirm ${HYPRLAND_STACK[@]}" "Installing Hyprland and related Packages"
+    execute_step "yay -Syu --noconfirm --needed" "Updating System Packages"
+    execute_step "yay -S --noconfirm --needed ${PRE_INSTALLED_PKGS[*]}" "Checking Pre-installed Packages"
+    execute_step "yay -S --noconfirm --needed ${FONTS_THEME[*]}" "Installing Fonts and Theme Packages"
+    execute_step "yay -S --noconfirm --needed ${SECURITY[*]}" "Installing Security Packages"
+    execute_step "yay -S --noconfirm --needed ${CLI_TOOLS[*]}" "Installing CLI Tools"
+    execute_step "yay -S --noconfirm --needed ${NETWORK_REMOTE[*]}" "Installing Network and Remote Packages"
+    execute_step "yay -S --noconfirm --needed ${CONTAINERS_VMS[*]}" "Installing Container and VM Packages"
+    execute_step "yay -S --noconfirm --needed ${GUI_APPS[*]}" "Installing GUI Applications"
+    execute_step "yay -S --noconfirm --needed ${HYPRLAND_STACK[*]}" "Installing Hyprland and related Packages"
 
     media_setup
     session_setup
@@ -230,3 +230,5 @@ main(){
 
     execute_step "swww img .assets/wallpapers/gwen-stacy.jpg --transition-fps=60 --transition-type=wipe" "Configuring Wallpaper" 
 }
+
+main

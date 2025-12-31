@@ -13,12 +13,24 @@
     {
         "id":"002",
         "language":"shell",
-        "filename":"arch/install.sh",
+        "filename":"arch-boot.sh",
         "title":"Arch Linux Bootstrap",
         "description":[
             "This script automates the installation of Arch Linux with a Btrfs filesystem, including subvolume setup, base system install, and bootloader configuration.",
             "It guides you through input prompts (disk, username, timezone, etc.) and logs all actions and output for troubleshooting.",
-            "After installation, it creates and runs a chroot script that finalizes system settings, users, and essential services like SSH and NetworkManager."
+            "After installation, it creates and runs a chroot script that finalizes system settings, users, and essential services like SSH and NetworkManager.",
+            "Note: Prior to running this script, ensure to run `pacman -Sy` to update the package database."
+        ]
+    },
+    {
+        "id":"003",
+        "language":"shell",
+        "filename": "arch-hypr.sh",
+        "title": "Arch Linux Hyprland Setup",
+        "description": [
+            "This script is extended from the Arch Linux Bootstrap script to set up a Hyprland desktop environment along with customized configurations ie. themes, wallpapers, and application settings.",
+            "It includes setting up all necessary packages for Hyprland, configuring SDDM as the display manager, and applying user-specific customizations for a polished desktop experience.",
+            "This  clones my personal dotfiles repository to apply my preferred configurations and themes."
         ]
     }
 ]
