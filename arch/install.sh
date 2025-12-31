@@ -165,6 +165,7 @@ configure_system_basics() {
 configure_initramfs() {
     log_info "Configuring initramfs for Btrfs"
     execute_step "sed -i 's/^MODULES=()/MODULES=(btrfs)/' /etc/mkinitcpio.conf" "Configuring initramfs for Btrfs"
+    echo "KEYMAP=us" > /etc/vconsole.conf
     execute_step "mkinitcpio -P" "Generating initramfs"
     log_success "Initramfs configured successfully."
 }
