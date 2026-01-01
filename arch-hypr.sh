@@ -87,7 +87,6 @@ NETWORK_REMOTE=(
     #   rustdesk-bin
     #   tigervnc
     localsend
-    dnsmasq
 )
 
 GUI_APPS=(
@@ -168,7 +167,7 @@ yay_setup(){
 
 media_setup(){
     log_info "Setting up Media Applications"
-    execute_step "sudo pacman -S --needed ${MEDIA_STACK[*]}" "Installing Media Stack Packages"
+    execute_step "sudo pacman -S --noconfirm --needed ${MEDIA_STACK[*]}" "Installing Media Stack Packages"
     log_info "Media Applications setup completed"
 
     log_info "Setting up audio with PipeWire"
@@ -180,7 +179,7 @@ media_setup(){
 
 session_setup(){
     log_info "Setting up Session Manager (SDDM)"
-    execute_step "sudo pacman -S --needed ${SESSION_STACK[*]}" "Installing Session Stack Packages"
+    execute_step "sudo pacman -S --noconfirm --needed ${SESSION_STACK[*]}" "Installing Session Stack Packages"
     execute_step "git clone -b wraith https://github.com/The-Robin-Hood/SilentSDDM" "Cloning Wraith SDDM"
     execute_step "sudo mkdir -p /usr/share/sddm/themes/wraith" "Creating SDDM folder"
     execute_step "sudo cp -r SilentSDDM/* /usr/share/sddm/themes/wraith/" "Moving files"
