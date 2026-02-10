@@ -30,7 +30,6 @@ PRE_INSTALLED_PKGS=(
 HYPRLAND_STACK=(
     hyprland-git
     hypridle-git
-    hyprlock-git
     hyprpicker-git
     hyprshot
     xdg-desktop-portal-hyprland-git
@@ -61,6 +60,7 @@ CLI_TOOLS=(
     fd
     fzf
     fastfetch
+    lazygit
     ripgrep
     tree
     tmux
@@ -71,6 +71,8 @@ CLI_TOOLS=(
     python-setuptools
     unzip
     xdg-terminal-exec
+    webkit2gtk
+    zenity
 )
 
 CONTAINERS_VMS=(
@@ -87,19 +89,25 @@ NETWORK_REMOTE=(
     #   rustdesk-bin
     #   tigervnc
     localsend
+    dnsmasq
 )
 
 GUI_APPS=(
-    ghostty
     chromium
     discord
     evince
+    ghostty
     thunar
+
+    telegram-desktop
     visual-studio-code-bin
-    zen-browser-bin
     obsidian-bin
-    bambustudio-bin
     bruno-bin
+    zen-browser-bin
+
+    #3D Apps
+    bambustudio-bin
+    blender-bin
 )
 
 SECURITY=(
@@ -124,6 +132,7 @@ MEDIA_STACK=(
     pavucontrol
     mpv
     imv
+    swaync
 )
 
 cleanup_sudo() {
@@ -201,7 +210,29 @@ dotfile_setup(){
     log_info "Dotfiles and Oh-My-Zsh setup completed"   
 }
 
+check_package_diff() {
+    ALL_PKGS=(
+        "${PRE_INSTALLED_PKGS[@]}"
+        "${HYPRLAND_STACK[@]}"
+        "${FONTS_THEME[@]}"
+        "${CLI_TOOLS[@]}"
+        "${CONTAINERS_VMS[@]}"
+        "${NETWORK_REMOTE[@]}"
+        "${GUI_APPS[@]}"
+        "${SECURITY[@]}"
+        "${SESSION_STACK[@]}"
+        "${MEDIA_STACK[@]}"
+    )
 
+    PKGS_INSTALLED_LOCALLY=$(pacman -Qqe)
+    
+    echo "=== Installed locally (Not in the pkgs list) ==="
+    comm -13 <(printf '%s\n' "${ALL_PKGS[@]}" | sort -u) <(echo "$PKGS_INSTALLED_LOCALLY" | sort -u)
+    echo ""
+    echo "=== Not installed locally ==="
+    comm -23 <(printf '%s\n' "${ALL_PKGS[@]}" | sort -u) <(echo "$PKGS_INSTALLED_LOCALLY" | sort -u)
+    echo ""
+}
 
 
 main(){
