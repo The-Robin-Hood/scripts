@@ -33,17 +33,18 @@ HYPRLAND_STACK=(
     hyprpicker-git
     hyprshot
     xdg-desktop-portal-hyprland-git
-    swww
+		swww
     waybar
     cliphist
     rofi
-    rofi-calc
     rofimoji
     wtype # rofimoji dependency
 )
 
 FONTS_THEME=(
-    noto-fonts
+  	adw-gtk-theme
+		matugen-bin 
+		noto-fonts
     noto-fonts-emoji
     ttf-hack-nerd
     woff2-font-awesome
@@ -61,7 +62,8 @@ CLI_TOOLS=(
     fzf
     fastfetch
     lazygit
-    ripgrep
+    man-db
+		ripgrep
     tree
     tmux
     zoxide
@@ -69,10 +71,11 @@ CLI_TOOLS=(
     gum
     pacman-contrib
     python-setuptools
-    unzip
+		unzip
     xdg-terminal-exec
     webkit2gtk
-    zenity
+		yazi
+		zenity
 )
 
 CONTAINERS_VMS=(
@@ -94,16 +97,14 @@ NETWORK_REMOTE=(
 
 GUI_APPS=(
     chromium
-    discord
-    evince
     ghostty
-    thunar
 
     telegram-desktop
-    visual-studio-code-bin
     obsidian-bin
     bruno-bin
+		thunderbird 
     zen-browser-bin
+		librewolf-bin 
 
     #3D Apps
     bambustudio-bin
@@ -111,7 +112,8 @@ GUI_APPS=(
 )
 
 SECURITY=(
-    ufw
+    #ufw
+		ufwall
     ufw-docker
     polkit-gnome
     keychain
@@ -234,7 +236,6 @@ check_package_diff() {
     echo ""
 }
 
-
 main(){
     clear
     ensure_connectivity_and_source
@@ -261,4 +262,5 @@ main(){
     execute_step "swww img .assets/wallpapers/gwen-stacy.jpg --transition-fps=60 --transition-type=wipe" "Configuring Wallpaper" 
 }
 
+mainmain#check_package_diff
 main
