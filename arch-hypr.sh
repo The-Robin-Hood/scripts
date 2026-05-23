@@ -33,7 +33,7 @@ HYPRLAND_STACK=(
     hyprpicker-git
     hyprshot
     xdg-desktop-portal-hyprland-git
-		swww
+		awww
     waybar
     cliphist
     rofi
@@ -53,14 +53,18 @@ FONTS_THEME=(
 
 CLI_TOOLS=(
     bat
-    btop
+		bluetui
+    bind
+		btop
     cpio
     dust
     ddcutil
     eza
+		ethtool
     fd
     fzf
     fastfetch
+		gdb
     lazygit
     man-db
 		ripgrep
@@ -71,6 +75,7 @@ CLI_TOOLS=(
     gum
     pacman-contrib
     python-setuptools
+		rsync
 		unzip
     xdg-terminal-exec
     webkit2gtk
@@ -98,12 +103,11 @@ NETWORK_REMOTE=(
 GUI_APPS=(
     chromium
     ghostty
+		obs-studio
 
-    telegram-desktop
     obsidian-bin
     bruno-bin
 		thunderbird 
-    zen-browser-bin
 		librewolf-bin 
 
     #3D Apps
@@ -262,5 +266,5 @@ main(){
     execute_step "swww img .assets/wallpapers/gwen-stacy.jpg --transition-fps=60 --transition-type=wipe" "Configuring Wallpaper" 
 }
 
-mainmain#check_package_diff
+#check_package_diff
 main
